@@ -1,29 +1,33 @@
 {
-  "name": "@imgcook/plugin-template",
+  "name": "@imgcook/plugin-directory-rax",
   "version": "0.0.1",
-  "description": "plugin template",
+  "description": "compute code directory by rax project type",
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=text mocha test/__test__.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgcook-plugin/plugin-template.git"
+    "url": "git+https://github.com/imgcook-plugin/plugin-directory-rax.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/imgcook-plugin/plugin-template/issues"
+    "url": "https://github.com/imgcook-plugin/plugin-directory-rax/issues"
   },
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/imgcook-plugin/plugin-template#readme",
+  "homepage": "https://github.com/imgcook-plugin/plugin-directory-rax#readme",
   "devDependencies": {
     "chai": "^4.2.0",
     "nyc": "^14.1.1"
   },
   "dependencies": {
-    "@imgcook/plugin-images": "0.1.0-alpha.7"
+    "@imgcook/plugin-images": "0.1.0-alpha.7",
+    "chalk": "^3.0.0",
+    "fs-extra": "^8.1.0",
+    "ora": "^4.0.3",
+    "parent-dirs": "^1.0.0"
   }
 }

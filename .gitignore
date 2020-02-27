@@ -6,3 +6,4 @@ package-lock.json
 .nyc_output/
 yarn.lock
 demo
+.vscode
