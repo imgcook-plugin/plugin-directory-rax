@@ -79,7 +79,7 @@ function optiFileType(fileType, isTS, projectType) {
     if (fileType === 'jsx') {
       return 'tsx';
     }
-  } else if (['js', 'jsx'].indexOf(fileType) > -1) {
+  } else if (['js', 'jsx'].indexOf(fileType) > -1 && projectType.type !== 'other') {
     return projectType.jsType;
   }
   return fileType;

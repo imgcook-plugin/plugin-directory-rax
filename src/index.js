@@ -149,6 +149,7 @@ const pluginHandler = async options => {
       let filePath = '';
       const fileName = panelName.split('.')[0];
       const fileType = util.optiFileType(panelName.split('.')[1], isTSProject, projectType);
+      panelName = `${fileName}.${fileType}`
       if (fileName !== 'index' && fileName !== 'context') {
         filePath = path.resolve(codeDirectory, 'components', fileName, `index.${fileType}`);
       } else {
@@ -159,12 +160,14 @@ const pluginHandler = async options => {
       imports = collectImports(imports, panelImports);
       return {
         ...item,
+        panelName,
         panelValue,
         panelPath: filePath
       };
     } catch (error) {}
   });
 
+  console.log('data.code.panelDisplay', data.code.panelDisplay);
   // 解析 package.json
   const pkgPanel = getPackageJSONPanel(projectPath, imports);
   if (pkgPanel) {
