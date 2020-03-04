@@ -52,16 +52,15 @@ function getPageName(data) {
 
 /**
  * 源码生成后，将依赖的 npm 包写入 package.json
- * @param {*} projectPath
+ * @param {*} packageJSONPath
  * @param {*} imports
  */
-function getPackageJSONPanel(projectPath, imports) {
+function calcuPackageJSONPanel(packageJSONPath, imports) {
   const packages = imports.map(item => {
     return item.match(/\'(.*)?\'/g)[0].slice(1, -1);
   });
-  const packageJSONPath = util.findClosestFilePath(projectPath, 'package.json');
   if (!fs.pathExistsSync(packageJSONPath)) {
-    return false;
+    return null;
   }
   let flag = false;
   try {
@@ -80,7 +79,7 @@ function getPackageJSONPanel(projectPath, imports) {
     });
     if (flag) {
       return {
-        panelPath: path.resolve(packageJSONPath),
+        panelPath: packageJSONPath,
         panelName: 'package.json',
         panelValue: `${JSON.stringify(json, null, 2)}\n`,
         panelType: 'json'
@@ -95,23 +94,20 @@ function getPackageJSONPanel(projectPath, imports) {
 
 /**
  * Rax 1.0 多页应用 && 单页应用源码生成更新路由信息 app.json
- * @param {*} projectPath
+ * @param {*} appJSONPath
  * @param {*} pageName
  */
-function getAppJSONPanel(projectPath, pageName, projectType) {
-  if (
-    projectType.type === util.PROJECT_TYPE.Rax1MultiApp.type ||
-    projectType.type === util.PROJECT_TYPE.Rax1SPAApp.type
-  ) {
-    const appJSONPath = path.join(projectPath, 'src/app.json');
-    if (!fs.pathExistsSync(appJSONPath)) {
-      return false;
+function calcuAppJSONPanel(appJSONPath, pageName) {
+  if (!fs.pathExistsSync(appJSONPath)) {
+    return null;
+  }
+  try {
+    const json = JSON.parse(fs.readFileSync(appJSONPath).toString());
+    if (!json.routes) {
+      json.routes = [];
     }
-    try {
-      const json = JSON.parse(fs.readFileSync(appJSONPath).toString());
-      if (!json.routes) {
-        json.routes = [];
-      }
+    const routesPath = json.routes.map(i => i.path);
+    if (routesPath.indexOf(`/${pageName}`) === -1) {
       json.routes.push({
         path: `/${pageName}`,
         source: `pages/${pageName}/index`
@@ -122,38 +118,37 @@ function getAppJSONPanel(projectPath, pageName, projectType) {
         panelValue: `${JSON.stringify(json, null, 2)}\n`,
         panelType: 'json'
       };
-    } catch (e) {
-      return null;
     }
+    return null;
+  } catch (e) {
+    return null;
   }
 }
 
 const pluginHandler = async options => {
-  let { filePath: projectPath, data } = options;
-  let imports = [];
-  const isTSProject = fs.pathExistsSync(path.join(projectPath, 'tsconfig.json'));
-  const projectType = util.getProjectType(projectPath);
-  let codeDirectory = '';
+  let { filePath, workspaceFolders, data } = options;
   let pageName = getPageName(data);
-  try {
-    codeDirectory = util.getCodeDirectory(projectType, projectPath, pageName);
-    fs.ensureDirSync(codeDirectory);
-  } catch (error) {
-    codeDirectory = projectPath;
-  }
+  filePath = path.resolve(filePath);
+  options.filePath = filePath;
+  // workspaceFolders 是一个数组，vscode 支持同时打开多个工作空间
+  const workspaceInfo = util.calcuWorkspaceInfo(workspaceFolders, filePath);
+  const { workspaceFolder, workspaceName } = workspaceInfo;
+  const projectType = util.calcuProjectType(workspaceFolder);
+  const exportDirs = util.calcuExportDirectory(workspaceFolder, filePath, pageName, projectType);
 
   const panelDisplay = data.code.panelDisplay;
+  let imports = [];
   data.code.panelDisplay = panelDisplay.map(item => {
     try {
       let { panelName, panelValue, panelImports = [] } = item;
-      let filePath = '';
+      let panelPath = '';
       const fileName = panelName.split('.')[0];
-      const fileType = util.optiFileType(panelName.split('.')[1], isTSProject, projectType);
-      panelName = `${fileName}.${fileType}`
+      const fileType = util.optiFileType(workspaceFolder, panelName.split('.')[1], projectType);
+      panelName = `${fileName}.${fileType}`;
       if (fileName !== 'index' && fileName !== 'context') {
-        filePath = path.resolve(codeDirectory, 'components', fileName, `index.${fileType}`);
+        panelPath = path.resolve(exportDirs.code, 'components', fileName, `index.${fileType}`);
       } else {
-        filePath = path.resolve(codeDirectory, `${fileName}.${fileType}`);
+        panelPath = path.resolve(exportDirs.code, `${fileName}.${fileType}`);
       }
       panelValue = replaceCssImport(panelValue, fileName);
       panelValue = replaceLocalImports(panelValue, panelImports, fileName);
@@ -162,24 +157,32 @@ const pluginHandler = async options => {
         ...item,
         panelName,
         panelValue,
-        panelPath: filePath
+        panelPath
       };
     } catch (error) {}
   });
 
-  console.log('data.code.panelDisplay', data.code.panelDisplay);
-  // 解析 package.json
-  const pkgPanel = getPackageJSONPanel(projectPath, imports);
-  if (pkgPanel) {
-    data.code.panelDisplay.push(pkgPanel);
+  // 解析是否要写入 package.json
+  if (exportDirs.packagejson) {
+    const pkgPanel = calcuPackageJSONPanel(exportDirs.packagejson, imports);
+    if (pkgPanel) {
+      data.code.panelDisplay.push(pkgPanel);
+    }
   }
-  // 解析 app.json
-  const appPanel = getAppJSONPanel(projectPath, pageName, projectType);
-  if (appPanel) {
-    data.code.panelDisplay.push(appPanel);
+
+  // 解析是否要写入 app.json
+  if (exportDirs.appjson) {
+    const appPanel = calcuAppJSONPanel(exportDirs.appjson, pageName);
+    if (appPanel) {
+      data.code.panelDisplay.push(appPanel);
+    }
   }
-  // codeDiff 标识插件做代码 diff
+
+  // 如需要开启 codediff 功能，需要返回如下两个字段
   data.code.codeDiff = true;
+  options.workspaceFolder = workspaceFolder;
+  console.log('[@imgcook/plugin-directory-rax] options:');
+  console.log(JSON.stringify(options));
   return options;
 };
 

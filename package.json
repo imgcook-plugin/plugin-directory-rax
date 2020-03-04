@@ -1,6 +1,6 @@
 {
   "name": "@imgcook/plugin-directory-rax",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "compute code directory by rax project type",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,6 @@
     "@imgcook/plugin-images": "0.1.0-alpha.7",
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
-    "ora": "^4.0.3",
-    "parent-dirs": "^1.0.0"
+    "ora": "^4.0.3"
   }
 }

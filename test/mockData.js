@@ -1,15 +1,14 @@
 module.exports = {
-  "moduleData": {
-    "id": 17679,
-    "name": "hook",
-    "cover": "https://img.alicdn.com/tfs/TB1mkjeqlr0gK0jSZFnXXbRRXXa-1404-1292.png",
+  moduleData: {
+    id: 17679,
+    name: 'hook',
+    cover: 'https://img.alicdn.com/tfs/TB1mkjeqlr0gK0jSZFnXXbRRXXa-1404-1292.png'
   },
-  "code": {
-    "panelDisplay": [
+  code: {
+    panelDisplay: [
       {
         panelName: 'index.jsx',
-        panelValue:
-          "'use strict';\nimport { createElement, useState, useEffect, useRef } from 'rax';\nimport { fetch } from 'whatwg-fetch';\nimport jsonp from 'fetch-jsonp';\nimport View from 'rax-view';\nimport Image from 'rax-image';\nimport Text from 'rax-text';\nimport Button from 'Button';\n\nimport { IndexContext, IndexProvider } from './context';\nimport styles from './index.css';\n\nexport default function Page() {\n  const [data, setData] = useState([\n    {\n      title: '小户型卫浴怎样才能装得高大上？',\n      coverImage: 'https://img.alicdn.com/tfs/TB1Txq6o7T2gK0jSZFkXXcIQFXa-684-684.png',\n      readCount: 200,\n      user: { userImage: 'https://img.alicdn.com/tfs/TB1DWe6oYj1gK0jSZFOXXc7GpXa-60-60.png', userName: '时尚家居' },\n      url: 'https://www.imgcook.com'\n    },\n    {\n      title: '拥有超多功能的40平米简约小公寓了解一下',\n      coverImage: 'https://img.alicdn.com/tfs/TB1XRQTo7P2gK0jSZPxXXacQpXa-684-648.png',\n      readCount: 500,\n      user: { userImage: 'https://img.alicdn.com/tfs/TB1DWe6oYj1gK0jSZFOXXc7GpXa-60-60.png', userName: '花花设计工作' },\n      url: 'https://www.imgcook.com/docs'\n    }\n  ]);\n  const hasCalled = useRef(false);\n  const {\n    state: { txt },\n    dispatch\n  } = useContext(IndexContext);\n  useEffect(() => {\n    if (!hasCalled.current) {\n      hasCalled.current = true;\n      fetch_example();\n      jsonp_example();\n\n      console.log('super props');\n    }\n  });\n  function isReadCountShow(readCount) {\n    return readCount > 300;\n  }\n  function fetch_example() {\n    fetch('https://jsonplaceholder.typicode.com/todos/1', { method: 'GET', headers: '{\"Content-Type\":\"json\"}' })\n      .then(response => response.json())\n      .then((data, error) => {\n        console.log('fetch example: ', data, error);\n        return data;\n      })\n      .catch(e => {\n        console.log('error', e);\n      });\n  }\n  function jsonp_example() {\n    jsonp('https://assets.airbnb.com/frontend/search_results.js', { jsonpCallbackFunction: 'search_results', body: {} })\n      .then(response => response.json())\n      .then((data, error) => {\n        console.log('jsonp example: ', data, error);\n        return data;\n      })\n      .catch(e => {\n        console.log('error', e);\n      });\n  }\n  return (\n    <IndexProvider>\n      <View style={styles.box}>\n        {data.map((item, index) => {\n          return (\n            <View\n              key={index}\n              onClick={e => {\n                window.open(item.url, '_blank');\n                dispatch({\n                  event: e,\n                  type: 'changeTxt',\n                  payload: { val: Math.random() }\n                });\n              }}\n              data-url={item.url}\n            >\n              <View style={styles.bd}>\n                <Image\n                  style={styles.layer}\n                  source={{ uri: 'https://img.alicdn.com/tfs/TB1bLoWoYH1gK0jSZFwXXc7aXXa-684-684.png' }}\n                />\n                <Image style={styles.bg} source={{ uri: item.coverImage }} />\n                <View style={styles.wrap}>\n                  <Image\n                    style={styles.riverdinwei}\n                    source={{ uri: 'https://img.alicdn.com/tfs/TB1mtZRoVT7gK0jSZFpXXaTkpXa-28-36.png' }}\n                  />\n                  <Text style={styles.distance}>距离500m</Text>\n                </View>\n              </View>\n              <View style={styles.main}>\n                <Text style={styles.title}>{item.title}</Text>\n              </View>\n              <View style={styles.ft}>\n                <View style={styles.block}>\n                  <Image\n                    style={styles.xianjin}\n                    source={{ uri: 'https://img.alicdn.com/tfs/TB1OvsYoW61gK0jSZFlXXXDKFXa-60-60.png' }}\n                  />\n                  <Text style={styles.fashionHome}>{item.user.userName}</Text>\n                </View>\n                {isReadCountShow(item.readCount) && (\n                  <View style={styles.group}>\n                    <Image\n                      style={styles.favorite}\n                      source={{ uri: 'https://img.alicdn.com/tfs/TB1arwYo7T2gK0jSZFkXXcIQFXa-46-44.png' }}\n                    />\n                    <Text style={styles.num}>{item.readCount}</Text>\n                  </View>\n                )}\n                <Button type={'primary'}>确定</Button>\n              </View>\n            </View>\n          );\n        })}\n      </View>\n    </IndexProvider>\n  );\n}\n",
+        panelValue: 'var a = 1;',
         panelType: 'js',
         panelImports: [
           "import {fetch} from 'whatwg-fetch'",
@@ -17,17 +16,17 @@ module.exports = {
           "import View from 'rax-view'",
           "import Image from 'rax-image'",
           "import Text from 'rax-text'",
-          "import Button from 'Button'",
-        ],
+          "import Button from 'Button'"
+        ]
       },
       {
         panelName: 'index.css',
         panelValue:
-          '.box {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  align-items: flex-start;\n  height: 534rpx;\n}\n.bd {\n  display: flex;\n  position: relative;\n  align-items: flex-start;\n  flex-direction: row;\n  opacity: 1;\n  width: 342rpx;\n  height: 342rpx;\n}\n.layer {\n  position: absolute;\n  top: 0rpx;\n  left: 0rpx;\n  width: 342rpx;\n  height: 342rpx;\n  overflow: hidden;\n}\n.bg {\n  position: absolute;\n  top: 0rpx;\n  left: 0rpx;\n  opacity: 1;\n  width: 342rpx;\n  height: 342rpx;\n}\n.wrap {\n  box-sizing: border-box;\n  display: flex;\n  position: relative;\n  align-items: center;\n  flex-direction: row;\n  margin-top: 18rpx;\n  margin-left: 18rpx;\n  border-radius: 15rpx;\n  background-color: rgba(0, 0, 0, 0.4);\n  padding-right: 9rpx;\n  padding-left: 10rpx;\n  height: 30rpx;\n}\n.riverdinwei {\n  opacity: 1;\n  width: 14rpx;\n  height: 18rpx;\n}\n.distance {\n  margin-left: 4rpx;\n  height: 22rpx;\n  font-weight: 400;\n  font-size: 18rpx;\n  color: #ffffff;\n  line-height: 22rpx;\n  white-space: nowrap;\n}\n.main {\n  display: flex;\n  align-items: flex-start;\n  flex-direction: row;\n  justify-content: center;\n  background-color: #ffffff;\n  width: 342rpx;\n  height: 114rpx;\n}\n.title {\n  margin-top: 22rpx;\n  width: 300rpx;\n  height: 88rpx;\n  font-weight: 400;\n  font-size: 30rpx;\n  color: #333333;\n  line-height: 44rpx;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.ft {\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  justify-content: space-between;\n  border-bottom-left-radius: 12rpx;\n  border-bottom-right-radius: 12rpx;\n  background-color: #ffffff;\n  padding-right: 17rpx;\n  padding-left: 18rpx;\n  width: 342rpx;\n  height: 78rpx;\n  overflow: hidden;\n}\n.block {\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  height: 30rpx;\n}\n.xianjin {\n  width: 30rpx;\n  height: 30rpx;\n}\n.fashionHome {\n  margin-left: 6rpx;\n  height: 28rpx;\n  font-weight: 300;\n  font-size: 24rpx;\n  color: #666666;\n  line-height: 28rpx;\n  white-space: nowrap;\n}\n.group {\n  display: flex;\n  align-items: center;\n  flex-direction: row;\n  height: 30rpx;\n}\n.favorite {\n  width: 22rpx;\n  height: 22rpx;\n}\n.num {\n  margin-left: 5rpx;\n  height: 26rpx;\n  font-weight: 400;\n  font-size: 22rpx;\n  color: #999999;\n  line-height: 26rpx;\n  white-space: nowrap;\n}\n',
-        panelType: 'css',
+          '.box {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  align-items: flex-start;\n  height: 534rpx;\n}',
+        panelType: 'css'
       }
     ],
-    "noTemplate": true,
-    "codeDiff": true
+    noTemplate: true,
+    codeDiff: true
   }
 };
