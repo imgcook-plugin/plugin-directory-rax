@@ -16,8 +16,8 @@ function replaceLocalImports(panelValue, imports, fileName) {
     replacement = './components/';
   }
   imports.forEach(item => {
-    const newItem = item.replace('./', replacement);
-    panelValue = panelValue.replace(item, newItem);
+    const newItem = item.import.replace('./', replacement);
+    panelValue = panelValue.replace(item.import, newItem);
   });
   return panelValue;
 }
@@ -31,12 +31,11 @@ function replaceCssImport(panelValue, fileName) {
 }
 
 function collectImports(imports, panelImports) {
-  const realImports = panelImports
+  return panelImports
     .filter(item => {
-      return item.indexOf('./') === -1;
+      return item.import.indexOf('./') === -1 && item.import.indexOf('../') === -1;
     })
     .concat(imports);
-  return Array.from(new Set(realImports));
 }
 
 function getPageName(data) {
@@ -56,9 +55,6 @@ function getPageName(data) {
  * @param {*} imports
  */
 function calcuPackageJSONPanel(packageJSONPath, imports) {
-  const packages = imports.map(item => {
-    return item.match(/\'(.*)?\'/g)[0].slice(1, -1);
-  });
   if (!fs.pathExistsSync(packageJSONPath)) {
     return null;
   }
@@ -71,10 +67,12 @@ function calcuPackageJSONPanel(packageJSONPath, imports) {
     if (!json.devDependencies) {
       json.devDependencies = {};
     }
-    packages.forEach(name => {
+    imports.forEach(item => {
+      const name = item.package;
+      const version = item.version || '*';
       if (!json.dependencies[name] && !json.devDependencies[name]) {
         flag = true;
-        json.dependencies[name] = '*';
+        json.dependencies[name] = version;
       }
     });
     if (flag) {
