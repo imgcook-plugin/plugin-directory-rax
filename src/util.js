@@ -18,6 +18,8 @@ function calcuProjectType(projectPath) {
         } else {
           return PROJECT_TYPE.Rax1SPAApp;
         }
+      } else if (jsonString.indexOf('@ali/build-plugin-pegasus-base') > -1) {
+        return PROJECT_TYPE.Rax1TBEMod;
       } else if (jsonString.indexOf('build-plugin-rax-component') > -1) {
         if (jsonString.indexOf('build-plugin-multi-demo-portal') > -1) {
           return PROJECT_TYPE.Rax1CompUI;
