@@ -7,17 +7,17 @@ describe('index.js', () => {
   const index = require('../index.js');
   const options = {
     data: mockData,
-    filePath: '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax/demo/src',
+    filePath: '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax/demo',
     workspaceFolders: [
       {
         uri: {
           $mid: 1,
           fsPath:
-            '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax/demo',
+            '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax',
           external:
-            'file:///Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax/demo',
+            'file:///Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax',
           path:
-            '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax/demo',
+            '/Users/beizhu/Documents/work-files/project-code/imgcook-group/dsl/plugin-directory-rax',
           scheme: 'file'
         },
         name: 'demo',

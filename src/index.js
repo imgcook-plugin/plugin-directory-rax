@@ -140,7 +140,7 @@ const pluginHandler = async options => {
     try {
       let { panelName, panelValue, panelImports = [] } = item;
       let panelPath = '';
-      const fileName = panelName.split('.')[0];
+      const fileName = panelName.split('.')[0].toLowerCase();
       const fileType = util.optiFileType(workspaceFolder, panelName.split('.')[1], projectType);
       panelName = `${fileName}.${fileType}`;
       if (fileName !== 'index' && fileName !== 'context') {
