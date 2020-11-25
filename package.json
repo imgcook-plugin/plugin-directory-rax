@@ -1,6 +1,6 @@
 {
   "name": "@imgcook/plugin-directory-rax",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "compute code directory by rax project type",
   "main": "index.js",
   "scripts": {
