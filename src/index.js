@@ -27,6 +27,10 @@ function replaceCssImport(panelValue, fileName) {
     `import styles from './${fileName}.css';`,
     `import styles from './index.css';`
   );
+  panelValue = panelValue.replace(
+    `import './${fileName}.css';`,
+    `import './index.css';`
+  );
   return panelValue;
 }
 
